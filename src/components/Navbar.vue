@@ -2,14 +2,15 @@
   <nav class="navbar">
     <div class="navbar-brand">TimeTrakr</div>
     <div class="navbar-actions">
-      <button @click="openRegisterModal">Sign up</button>
-      <button @click="openLoginModal">Login</button>
+      <BaseButton @click="openRegisterModal">Sign up</BaseButton>
+      <BaseButton @click="openLoginModal">Login</BaseButton>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import BaseButton from './base/BaseButton.vue';
 
 export default defineComponent({
   name: 'Navbar',
@@ -20,6 +21,8 @@ export default defineComponent({
     openRegisterModal() {
       this.$emit('open-register');
     },
+  }, components: {
+    BaseButton,
   },
 });
 </script>
@@ -41,19 +44,5 @@ export default defineComponent({
 .navbar-brand {
   font-size: var(--font-size-large);
   font-weight: bold;
-}
-
-.navbar-actions button {
-  margin-left: var(--spacing-medium);
-  padding: var(--spacing-small) var(--spacing-medium);
-  background-color: var(--color-secondary);
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: var(--border-radius);
-}
-
-.navbar-actions button:hover {
-  background-color: var(--color-secondary-hover);
 }
 </style>

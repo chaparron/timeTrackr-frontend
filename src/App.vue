@@ -9,8 +9,8 @@
 import { defineComponent, ref } from 'vue';
 import Navbar from './components/Navbar.vue';
 import HomeView from './views/HomeView.vue';
-import LoginModal from './components/LoginModal.vue';
-import RegisterModal from './components/RegisterModal.vue';
+import LoginModal from './components/modals/LoginModal.vue';
+import RegisterModal from './components/modals/RegisterModal.vue';
 
 export default defineComponent({
   name: 'App',
