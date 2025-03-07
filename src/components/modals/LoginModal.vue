@@ -21,6 +21,8 @@ import { defineComponent } from 'vue';
 import BaseModal from '../base/BaseModal.vue';
 import ModalForm from '../base/ModalForm.vue';
 import BaseButton from '../base/BaseButton.vue';
+import { useAuthStore } from '@/stores/auth.store';
+import { AuthService } from '@/services/auth/auth.service';
 
 export default defineComponent({
   name: 'LoginModal',
@@ -36,10 +38,19 @@ export default defineComponent({
     };
   },
   methods: {
-    login() {
-      console.log('Login with:', this.email, this.password);
+  async login() {
+    try {
+      const response = await AuthService.login(this.email, this.password);
+      
+      const authStore = useAuthStore();
+      authStore.loginSuccess(response.access_token, response.user);
+      
+      this.$emit('login-success', response);
       this.$emit('close');
-    },
-  },
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  }
+}
 });
 </script>

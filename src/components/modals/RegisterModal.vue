@@ -25,6 +25,8 @@ import { defineComponent } from 'vue';
 import BaseModal from '../base/BaseModal.vue';
 import ModalForm from '../base/ModalForm.vue';
 import BaseButton from '../base/BaseButton.vue';
+import { useAuthStore } from '@/stores/auth.store';
+import { AuthService } from '@/services/auth/auth.service';
 
 export default defineComponent({
   name: 'RegisterModal',
@@ -41,10 +43,19 @@ export default defineComponent({
     };
   },
   methods: {
-    register() {
-      console.log('Registering with:', this.name, this.email, this.password);
+  async register() {
+    try {
+      const response = await AuthService.register(this.name, this.email, this.password);
+      
+      const authStore = useAuthStore();
+      authStore.loginSuccess(response.access_token, response.user);
+      
+      this.$emit('register-success', response);
       this.$emit('close');
-    },
-  },
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+  }
+}
 });
 </script>
