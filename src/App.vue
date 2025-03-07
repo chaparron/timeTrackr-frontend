@@ -1,26 +1,33 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Navbar @open-login="isLoginModalOpen = true" @open-register="isRegisterModalOpen = true" />
+  <HomeView />
+  <LoginModal v-if="isLoginModalOpen" @close="isLoginModalOpen = false" />
+  <RegisterModal v-if="isRegisterModalOpen" @close="isRegisterModalOpen = false" />
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import Navbar from './components/Navbar.vue';
+import HomeView from './views/HomeView.vue';
+import LoginModal from './components/LoginModal.vue';
+import RegisterModal from './components/RegisterModal.vue';
 
-export default {
+export default defineComponent({
   name: 'App',
   components: {
-    HelloWorld
-  }
-}
-</script>
+    Navbar,
+    HomeView,
+    LoginModal,
+    RegisterModal,
+  },
+  setup() {
+    const isLoginModalOpen = ref(false);
+    const isRegisterModalOpen = ref(false);
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+    return {
+      isLoginModalOpen,
+      isRegisterModalOpen,
+    };
+  },
+});
+</script>
