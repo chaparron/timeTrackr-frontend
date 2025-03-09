@@ -22,7 +22,7 @@ import BaseModal from '../base/BaseModal.vue';
 import ModalForm from '../base/ModalForm.vue';
 import BaseButton from '../base/BaseButton.vue';
 import { useAuthStore } from '@/stores/auth.store';
-import { AuthService } from '@/services/auth/auth.service';
+import { AuthService } from '@/services/auth.service';
 
 export default defineComponent({
   name: 'LoginModal',

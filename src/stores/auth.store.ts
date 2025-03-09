@@ -1,4 +1,4 @@
-import { AuthService } from '@/services/auth/auth.service';
+import { AuthService } from '@/services/auth.service';
 import type { AuthResponse } from '@/types/auth';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
