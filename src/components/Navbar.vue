@@ -4,7 +4,7 @@
     <div class="navbar-actions">
       <template v-if="isAuthenticated">
         <span class="greeting">Hello {{ user?.username }}</span>
-        <BaseButton @click="logout">Logout</BaseButton>
+        <BaseButton cancel @click="logout">Logout</BaseButton>
       </template>
       <template v-else>
         <BaseButton @click="openRegisterModal">Sign up</BaseButton>

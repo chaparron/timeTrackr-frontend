@@ -9,7 +9,7 @@
         <p>{{ event.description }}</p>
         <p class="event-type">{{ event.type }}</p>
       </div>
-      <BaseButton class="delete-button" @click="handleDelete">Delete</BaseButton>
+      <BaseButton cancel class="delete-button" @click="handleDelete">Delete</BaseButton>
     </div>
   </template>
   
