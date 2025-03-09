@@ -47,7 +47,7 @@ export default defineComponent({
     try {
       const response = await AuthService.register(this.name, this.email, this.password);
       const authStore = useAuthStore();
-      authStore.loginSuccess(response.access_token, response.user);
+      authStore.loginSuccess(response.access_token, response);
       this.$emit('close');
     } catch (error) {
       console.error('Registration failed:', error);

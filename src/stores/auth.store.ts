@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { AuthResponse } from '@/types/auth'; // Asegúrate de importar el tipo correcto
+import type { AuthResponse } from '@/types/auth';
+import type { User } from '@/types/user';
 import { AuthService } from '@/services/auth.service';
 import { useEventStore } from './event.store';
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<AuthResponse | null>(null);
+  const user = ref<User | null>(null);
   const isAuthenticated = ref(false);
 
   const initAuth = async () => {
@@ -24,9 +25,9 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const loginSuccess = (token: string, userData: AuthResponse) => {
+  const loginSuccess = (token: string, authResponse: AuthResponse) => {
     localStorage.setItem('access_token', token);
-    user.value = userData;
+    user.value = authResponse.user;
     isAuthenticated.value = true;
   };
 

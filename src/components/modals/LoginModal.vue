@@ -43,7 +43,7 @@ export default defineComponent({
       const response = await AuthService.login(this.email, this.password);
       
       const authStore = useAuthStore();
-      authStore.loginSuccess(response.access_token, response.user);
+      authStore.loginSuccess(response.access_token, response);
       this.$emit('close');
     } catch (error) {
       console.error('Login failed:', error);
