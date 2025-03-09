@@ -1,9 +1,11 @@
-import type { EventResponse } from '@/types/event';
 import { defineStore } from 'pinia';
+import type { EventResponse } from '@/types/event';
+import { EventService } from '@/services/event.service';
 
 export const useEventStore = defineStore('event', {
   state: () => ({
     events: [] as EventResponse[],
+    isLoading: false,
   }),
   actions: {
     setEvents(events: EventResponse[]) {
@@ -20,10 +22,21 @@ export const useEventStore = defineStore('event', {
     },
     removeEvent(eventId: number) {
       this.events = this.events.filter(e => e.id !== eventId);
-    }
+    },
+    async loadEvents() {
+      this.isLoading = true;
+      try {
+        const events = await EventService.getAllEvents();
+        this.setEvents(events);
+      } catch (error) {
+        console.error('Error loading events:', error);
+      } finally {
+        this.isLoading = false;
+      }
+    },
   },
   getters: {
     getEvents: (state) => state.events,
-    getEventById: (state) => (id: number) => state.events.find(e => e.id === id)
-  }
+    getEventById: (state) => (id: number) => state.events.find(e => e.id === id),
+  },
 });
