@@ -30,21 +30,9 @@ export default defineComponent({
       authStore.initAuth();
     });
 
-    const handleLoginSuccess = (userData: { token: string; user: any }) => {
-      authStore.loginSuccess(userData.token, userData.user);
-      isLoginModalOpen.value = false;
-    };
-
-    const handleRegisterSuccess = (userData: { token: string; user: any }) => {
-      authStore.loginSuccess(userData.token, userData.user);
-      isRegisterModalOpen.value = false;
-    };
-
     return {
       isLoginModalOpen,
       isRegisterModalOpen,
-      handleLoginSuccess,
-      handleRegisterSuccess
     };
   },
 });

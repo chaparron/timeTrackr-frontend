@@ -1,3 +1,5 @@
+import { AuthService } from '@/services/auth/auth.service';
+import type { AuthResponse } from '@/types/auth';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
@@ -5,10 +7,16 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<{ email: string; username: string } | null>(null);
   const isAuthenticated = ref(false);
 
-  const initAuth = () => {
+  const initAuth = async () => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      isAuthenticated.value = true;
+      try {
+        const response: AuthResponse = await AuthService.getMe();
+        user.value = response.user;
+        isAuthenticated.value = true;
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

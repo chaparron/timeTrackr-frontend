@@ -44,8 +44,6 @@ export default defineComponent({
       
       const authStore = useAuthStore();
       authStore.loginSuccess(response.access_token, response.user);
-      
-      this.$emit('login-success', response);
       this.$emit('close');
     } catch (error) {
       console.error('Login failed:', error);
