@@ -26,8 +26,8 @@ export default defineComponent({
     const isLoginModalOpen = ref(false);
     const isRegisterModalOpen = ref(false);
 
-    onMounted(() => {
-      authStore.initAuth();
+    onMounted(async () => {
+      await authStore.initAuth();
     });
 
     return {

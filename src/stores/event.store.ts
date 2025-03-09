@@ -26,8 +26,7 @@ export const useEventStore = defineStore('event', {
     async loadEvents() {
       this.isLoading = true;
       try {
-        const events = await EventService.getAllEvents();
-        this.setEvents(events);
+        this.events = await EventService.getAllEvents();
       } catch (error) {
         console.error('Error loading events:', error);
       } finally {
