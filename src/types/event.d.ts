@@ -1,6 +1,6 @@
 interface HourEntry {
     start: string;
-    end?: string;
+    end: string;
 }
 
 interface DateEntry {
@@ -14,7 +14,7 @@ export interface EventResponse {
     userId: number;
     type: string;
     colleagues?: string[];
-    dates?: DateEntry[];
+    dates: DateEntry[];
     description?: string;
     totalHours: number;
 }

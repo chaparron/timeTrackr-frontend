@@ -16,6 +16,15 @@
       <p>No events found. Start by creating your first event!</p>
     </div>
 
+    <div v-else class="events-list">
+      <EventCard
+        v-for="event in filteredEvents"
+        :key="event.id"
+        :event="event"
+        @delete="deleteEvent"
+      />
+    </div>
+
     <CreateEventModal
       v-if="isCreateEventModalOpen"
       :selectedDay="selectedDay"
@@ -39,11 +48,14 @@ import { useEventStore } from '@/stores/event.store';
 import { storeToRefs } from 'pinia';
 import BaseButton from '@/components/base/BaseButton.vue';
 import CreateEventModal from '@/components/modals/CreateEventModal.vue';
+import EventCard from '@/components/EventCard.vue';
+import { EventService } from '@/services/event.service';
 
 export default defineComponent({
   components: {
     BaseButton,
     CreateEventModal,
+    EventCard,
   },
   setup() {
     const authStore = useAuthStore();
@@ -56,6 +68,18 @@ export default defineComponent({
 
     const hasEvents = computed(() => events.value.length > 0);
 
+    const filteredEvents = computed(() => {
+      return events.value
+        .filter(event => 
+          event.dates.some(date => date.day === selectedDay.value)
+        )
+        .sort((a, b) => {
+          const timeA = a.dates[0].hours[0].start;
+          const timeB = b.dates[0].hours[0].start;
+          return timeA.localeCompare(timeB);
+        });
+    });
+
     const openCreateEventModal = () => {
       isCreateEventModalOpen.value = true;
     };
@@ -64,13 +88,24 @@ export default defineComponent({
       eventStore.loadEvents();
     };
 
+    const deleteEvent = async (eventId: number) => {
+      try {
+        await EventService.deleteEvent(eventId);
+        eventStore.loadEvents();
+      } catch (error) {
+        console.error('Error deleting event:', error);
+      }
+    };
+
     return {
       isAuthenticated,
       hasEvents,
       selectedDay,
       isCreateEventModalOpen,
+      filteredEvents,
       openCreateEventModal,
       handleEventCreated,
+      deleteEvent,
     };
   },
 });
@@ -111,5 +146,10 @@ p {
   padding: var(--spacing-small);
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
+}
+
+.events-list {
+  max-width: 800px;
+  margin: 0 auto;
 }
 </style>

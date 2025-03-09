@@ -2,7 +2,10 @@
     --color-primary: #2c3e50;
     --color-secondary: #42b983;
     --color-secondary-hover: #3aa876;
+    --color-cancel: #e55b5b;
+    --color-cancel-hover: #d14c4c;
     --color-background: #242424;
+    --color-background-light: #333;
     --color-text: rgba(255, 255, 255, 0.87);
   
     --font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
