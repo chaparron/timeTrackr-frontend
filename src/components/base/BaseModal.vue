@@ -1,6 +1,6 @@
 <template>
     <div class="modal-overlay" @click.self="closeModal">
-      <div class="modal">
+      <div class="modal" :class="{ xl }">
         <h2 class="title">{{ title }}</h2>
         <slot name="form"></slot>
         <div class="modal-buttons">
@@ -20,6 +20,10 @@
         type: String,
         required: true,
       },
+      xl: {
+        type: Boolean,
+        default: false,
+      },
     },
     methods: {
       closeModal() {
@@ -35,20 +39,28 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 200;
+    overflow-y: auto;
+    padding: 20px 0;
   }
   
   .modal {
     background-color: var(--color-primary);
     padding: var(--spacing-large);
     border-radius: var(--border-radius);
-    width: 300px;
+    width: 30%;
     text-align: center;
+    overflow-y: auto;
+    max-height: 90vh;
+  }
+
+  .xl {
+    width: 80%;
   }
   
   .modal-buttons {
@@ -63,4 +75,4 @@
     margin: 0 0 20px;
   }
   
-  </style>
+</style>
