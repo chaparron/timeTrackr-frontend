@@ -12,25 +12,33 @@
           </div>
         </div>
 
-        <div class="form-group day-selector">
-          <input type="date" id="day" v-model="eventData.day" required />
+        <div v-for="(date, dateIndex) in eventData.dates" :key="dateIndex" class="form-group day-selector">
+          <input type="date" v-model="date.day" required />
 
-          <div class="form-row time-selector">
+          <div v-for="(hour, hourIndex) in date.hours" :key="hourIndex" class="form-row time-selector">
             <div class="form-group">
-              <input type="time" id="startTime" v-model="eventData.startTime" required />
+              <input type="time" v-model="hour.start" required />
             </div>
             <div class="form-group">
-              <input type="time" id="endTime" v-model="eventData.endTime" />
+              <input type="time" v-model="hour.end" required />
+            </div>
+             <div class="form-row time-buttons">
+              <button type="button" class="add" @click="addTime(dateIndex)">Add Time</button>
             </div>
             <div class="time-buttons">
-              <button type="button" class="add" @click="addTime">add</button>
-              <button type="button" class="delete" @click="deleteTime">delete</button>
+              <button type="button" class="delete" @click="deleteTime(dateIndex, hourIndex)">Delete</button>
             </div>
           </div>
+
+
+
           <div class="form-row day-buttons">
-            <button type="button" class="add" @click="addDay">add</button>
-            <button type="button" class="delete" @click="deleteDay">delete</button>
+            <button type="button" class="delete" @click="deleteDay(dateIndex)">Delete Day</button>
           </div>
+        </div>
+
+        <div class="form-row day-buttons">
+          <button type="button" class="add" @click="addDay">Add Day</button>
         </div>
 
         <div class="form-group">
@@ -65,71 +73,76 @@ export default defineComponent({
     },
   },
   data() {
-    return {
-      eventData: {
-        title: 'Title',
-        description: 'Description',
-        type: 'Type',
-        day: this.selectedDay,
-        startTime: '09:00',
-        endTime: '10:00',
-      },
-    };
+  return {
+    eventData: {
+      title: 'Title',
+      description: 'Description',
+      type: 'Type',
+      dates: [
+        {
+          day: this.selectedDay,
+          hours: [
+            { start: '09:00', end: '10:00' }
+          ]
+        }
+      ]
+    },
+  };
+},
+methods: {
+  addDay() {
+    this.eventData.dates.push({
+      day: this.selectedDay,
+      hours: [{ start: '09:00', end: '10:00' }]
+    });
   },
-  methods: {
-    async createEvent() {
-      try {
-        const eventPayload = {
-          title: this.eventData.title,
-          description: this.eventData.description,
-          type: this.eventData.type,
-          dates: [
-            {
-              day: this.eventData.day,
-              hours: [
-                {
-                  start: this.eventData.startTime,
-                  end: this.eventData.endTime,
-                },
-              ],
-            },
-          ],
-        };
+  
+  deleteDay(dateIndex: number) {
+    this.eventData.dates.splice(dateIndex, 1);
+  },
+  
+  addTime(dateIndex: number) {
+    this.eventData.dates[dateIndex].hours.push({ 
+      start: '09:00', 
+      end: '10:00' 
+    });
+  },
+  
+  deleteTime(dateIndex: number, hourIndex: number) {
+    this.eventData.dates[dateIndex].hours.splice(hourIndex, 1);
+  },
 
-        await EventService.createEvent(eventPayload);
-        const eventStore = useEventStore();
-        await eventStore.loadEvents();
-        this.$emit('event-created');
-        this.$emit('close');
-      } catch (error) {
-        console.error('Error creating event:', error);
-      }
-    },
-    addDay() {
-      alert('Add day coming soon...');
-    },
-    deleteDay() {
-      alert('Delete day coming soon...');
-    },
-    addTime() {
-      alert('Add time coming soon...');
-    },
-    deleteTime() {
-      alert('Delete time coming soon...');
-    },
-  },
+  async createEvent() {
+    try {
+      const eventPayload = {
+        title: this.eventData.title,
+        description: this.eventData.description,
+        type: this.eventData.type,
+        dates: this.eventData.dates
+      };
+
+      await EventService.createEvent(eventPayload);
+      const eventStore = useEventStore();
+      await eventStore.loadEvents();
+      this.$emit('event-created');
+      this.$emit('close');
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
+  }
+}
 });
 </script>
 
 <style scoped>
 .form-group {
-  margin-bottom: var(--spacing-medium);
+  margin-bottom: var(--spacing-small);
 }
 
 .form-row {
   display: flex;
-  gap: var(--spacing-medium);
-  margin-bottom: var(--spacing-medium);
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
 }
 
 .form-row .form-group {
@@ -137,22 +150,22 @@ export default defineComponent({
 }
 
 .day-selector {
-  text-align: center;
-  margin-bottom: var(--spacing-large);
-  border: 1px solid white;
-  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.time-selector {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 4px;
 }
 
 .day-buttons {
   display: flex;
   justify-content: center;
-  gap: var(--spacing-medium);
-}
-
-.time-selector {
-  margin: 10px 20px;
-  display: flex;
-  gap: var(--spacing-medium);
+  gap: var(--spacing-small);
 }
 
 .add {
