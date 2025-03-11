@@ -1,11 +1,18 @@
+interface Duration {
+    hours: number;
+    minutes: number;
+}
+
 interface HourEntry {
     start: string;
     end: string;
+    duration: Duration;
 }
 
 interface DateEntry {
     day: string;
     hours: HourEntry[];
+    duration: Duration;
 }
 
 export interface EventResponse {
@@ -13,8 +20,8 @@ export interface EventResponse {
     title: string;
     userId: number;
     type: string;
-    colleagues?: string[];
+    colleagues?: string[] | null;
     dates: DateEntry[];
     description?: string;
-    totalHours: number;
+    totalHours: Duration;
 }
