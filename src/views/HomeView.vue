@@ -12,7 +12,10 @@
     </div>
 
     <h2>Your Events</h2>
-    <div v-if="!hasEvents">
+    <div v-if="eventStore.isLoading">
+      <p>Loading events...</p>
+    </div>
+    <div v-else-if="!hasEvents">
       <p>No events found. Start by creating your first event!</p>
     </div>
 
@@ -42,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 import { useEventStore } from '@/stores/event.store';
 import { storeToRefs } from 'pinia';
@@ -61,15 +64,25 @@ export default defineComponent({
     const authStore = useAuthStore();
     const eventStore = useEventStore();
     const { isAuthenticated } = storeToRefs(authStore);
-    const { events } = storeToRefs(eventStore);
-
     const selectedDay = ref(new Date().toISOString().split('T')[0]);
     const isCreateEventModalOpen = ref(false);
 
-    const hasEvents = computed(() => events.value.length > 0);
+    watch(isAuthenticated, async (newVal) => {
+      if (newVal) {
+        await eventStore.loadEvents();
+      }
+    });
+
+    onMounted(async () => {
+      if (isAuthenticated.value) {
+        await eventStore.loadEvents();
+      }
+    });
+
+    const hasEvents = computed(() => eventStore.events.length > 0);
 
     const filteredEvents = computed(() => {
-      return events.value
+      return eventStore.events
         .filter(event => 
           event.dates.some(date => date.day === selectedDay.value)
         )
@@ -84,14 +97,15 @@ export default defineComponent({
       isCreateEventModalOpen.value = true;
     };
 
-    const handleEventCreated = () => {
-      eventStore.loadEvents();
+    const handleEventCreated = async () => {
+      await eventStore.loadEvents();
+      isCreateEventModalOpen.value = false;
     };
 
     const deleteEvent = async (eventId: number) => {
       try {
         await EventService.deleteEvent(eventId);
-        eventStore.loadEvents();
+        eventStore.removeEvent(eventId);
       } catch (error) {
         console.error('Error deleting event:', error);
       }
@@ -99,6 +113,7 @@ export default defineComponent({
 
     return {
       isAuthenticated,
+      eventStore,
       hasEvents,
       selectedDay,
       isCreateEventModalOpen,
