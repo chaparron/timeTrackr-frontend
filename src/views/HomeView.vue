@@ -1,15 +1,10 @@
 <template>
   <div v-if="isAuthenticated" class="authenticated-view">
-    <div class="controls-container">
-      <div class="controls">
-        <input
-          type="date"
-          v-model="selectedDay"
-          class="day-selector"
-        />
-        <BaseButton @click="openCreateEventModal">Create Event</BaseButton>
-      </div>
-    </div>
+    <ControlsNavbar
+      :selectedDay="selectedDay"
+      :openCreateEventModal="openCreateEventModal"
+      :updateSelectedDay="updateSelectedDay"
+    />
 
     <h2>Your Events</h2>
 
@@ -51,16 +46,16 @@ import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 import { useEventStore } from '@/stores/event.store';
 import { storeToRefs } from 'pinia';
-import BaseButton from '@/components/base/BaseButton.vue';
 import CreateEventModal from '@/components/modals/CreateEventModal.vue';
 import EventCard from '@/components/EventCard.vue';
 import { EventService } from '@/services/event.service';
+import ControlsNavbar from "@/components/ControlsNavbar.vue";
 
 export default defineComponent({
   components: {
-    BaseButton,
     CreateEventModal,
     EventCard,
+    ControlsNavbar,
   },
   setup() {
     const authStore = useAuthStore();
@@ -111,6 +106,10 @@ export default defineComponent({
       }
     };
 
+    const updateSelectedDay = (newDay: string) => {
+        selectedDay.value = newDay;
+    }
+
     return {
       isAuthenticated,
       eventStore,
@@ -120,6 +119,7 @@ export default defineComponent({
       openCreateEventModal,
       handleEventCreated,
       deleteEvent,
+      updateSelectedDay,
     };
   },
 });
@@ -142,24 +142,6 @@ p {
   font-size: var(--font-size-base);
   line-height: 1.6;
   margin-bottom: var(--spacing-medium);
-}
-
-.controls-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: var(--spacing-large);
-}
-
-.controls {
-  display: flex;
-  gap: var(--spacing-medium);
-  align-items: center;
-}
-
-.day-selector {
-  padding: var(--spacing-small);
-  border-radius: var(--border-radius);
-  border: 1px solid var(--color-border);
 }
 
 .events-list {
