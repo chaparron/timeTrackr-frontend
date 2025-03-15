@@ -12,16 +12,18 @@
     </div>
 
     <h2>Your Events</h2>
+
     <div v-if="eventStore.isLoading">
       <p>Loading events...</p>
     </div>
-    <div v-else-if="!hasEvents">
-      <p>No events found. Start by creating your first event!</p>
+
+    <div v-else-if="todayEvents.length === 0">
+      <p>No events found for the selected day. Create your first event!</p>
     </div>
 
     <div v-else class="events-list">
       <EventCard
-        v-for="event in filteredEvents"
+        v-for="event in todayEvents"
         :key="event.id"
         :event="event"
         @delete="deleteEvent"
@@ -35,7 +37,7 @@
       @event-created="handleEventCreated"
     />
   </div>
-  
+
   <div v-else class="home">
     <h1>Welcome to TrackerLogger</h1>
     <p>TimeTrakr is a productivity tracking tool designed to help you measure and analyze your work efficiency.</p>
@@ -79,11 +81,9 @@ export default defineComponent({
       }
     });
 
-    const hasEvents = computed(() => eventStore.events.length > 0);
-
-    const filteredEvents = computed(() => {
+    const todayEvents = computed(() => {
       return eventStore.events
-        .filter(event => 
+        .filter(event =>
           event.dates.some(date => date.day === selectedDay.value)
         )
         .sort((a, b) => {
@@ -114,10 +114,9 @@ export default defineComponent({
     return {
       isAuthenticated,
       eventStore,
-      hasEvents,
       selectedDay,
       isCreateEventModalOpen,
-      filteredEvents,
+      todayEvents,
       openCreateEventModal,
       handleEventCreated,
       deleteEvent,
